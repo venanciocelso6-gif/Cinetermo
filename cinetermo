@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CINETERMO ⚗️</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#041a29, #08344a);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  h1 {
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(5, 60px);
+    grid-gap: 8px;
+  }
+  .tile {
+    width: 60px;
+    height: 60px;
+    background-color: #1b2f3a;
+    border: 2px solid #3d6072;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .correct {
+    background-color: #4caf50;
+  }
+  .present {
+    background-color: #c7b100;
+  }
+  .absent {
+    background-color: #555;
+  }
+  #input-area {
+    margin-top: 15px;
+  }
+  input {
+    text-transform: uppercase;
+    width: 120px;
+    height: 40px;
+    text-align: center;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+  }
+  button {
+    margin-left: 10px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0b6477;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #message {
+    margin-top: 10px;
+    font-size: 1.2em;
+  }
+</style>
+</head>
+<body>
+  <h1>🧪 CINETERMO 🧪</h1>
+  <div id="board"></div>
+  <div id="input-area">
+    <input type="text" id="guess" maxlength="5" placeholder="Digite..." />
+    <button onclick="checkGuess()">Tentar</button>
+  </div>
+  <div id="message"></div>
+
+<script>
+const palavras = [
+  "CALOR", "FATOR", "REAGE", "MOLAR", "ATOMO",
+  "MASSA", "GASES", "ACIDO", "BASES", "TEMPO",
+  "DILUI", "FUSAO", "VAPOR", "LENTO"
+];
+
+let palavraSecreta = palavras[Math.floor(Math.random() * palavras.length)];
+let tentativas = 0;
+const maxTentativas = 6;
+
+const board = document.getElementById("board");
+for (let i = 0; i < maxTentativas * 5; i++) {
+  const tile = document.createElement("div");
+  tile.classList.add("tile");
+  board.appendChild(tile);
+}
+
+function checkGuess() {
+  const input = document.getElementById("guess");
+  const tentativa = input.value.toUpperCase();
+  const message = document.getElementById("message");
+
+  if (tentativa.length !== 5) {
+    message.textContent = "Digite uma palavra com 5 letras!";
+    return;
+  }
+
+  const start = tentativas * 5;
+  for (let i = 0; i < 5; i++) {
+    const tile = board.children[start + i];
+    tile.textContent = tentativa[i];
+
+    if (tentativa[i] === palavraSecreta[i]) {
+      tile.classList.add("correct");
+    } else if (palavraSecreta.includes(tentativa[i])) {
+      tile.classList.add("present");
+    } else {
+      tile.classList.add("absent");
+    }
+  }
+
+  tentativas++;
+  input.value = "";
+
+  if (tentativa === palavraSecreta) {
+    message.textContent = "🎉 Acertou! A palavra era " + palavraSecreta + "!";
+    input.disabled = true;
+  } else if (tentativas >= maxTentativas) {
+    message.textContent = "💀 Fim de jogo! A palavra era " + palavraSecreta + ".";
+    input.disabled = true;
+  }
+}
+</script>
+</body>
+</html>
